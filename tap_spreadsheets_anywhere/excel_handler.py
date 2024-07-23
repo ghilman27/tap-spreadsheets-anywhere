@@ -69,7 +69,8 @@ def get_legacy_row_iterator(table_spec, file_handle):
 
 
 def get_row_iterator(table_spec, file_handle):
-    workbook = openpyxl.load_workbook(file_handle.name, read_only=True)
+    #previously file_handle.name returns error for gcs file "gs://..."
+    workbook = openpyxl.load_workbook(file_handle, read_only=True)
     
     if "worksheet_name" in table_spec:
         try:
