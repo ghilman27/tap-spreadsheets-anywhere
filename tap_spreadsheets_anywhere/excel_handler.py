@@ -26,6 +26,7 @@ def generator_wrapper(reader, table_spec: dict={}) -> dict:
 
             formatted_key = header_cell.value
             if not formatted_key:
+                continue # don't read empty columns
                 formatted_key = '' # default to empty string for key
 
             # remove non-word, non-whitespace characters
