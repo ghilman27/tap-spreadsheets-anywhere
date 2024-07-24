@@ -6,7 +6,7 @@ LOGGER = logging.getLogger(__name__)
 
 def generator_wrapper(reader, table_spec):
     usecols =  table_spec.get("usecols", [])
-    usecols =  set(usecols) if len(usecols) > 0 else set(range(reader.max_column))
+    usecols =  set(usecols) if len(usecols) > 0 else set(range(len(reader.fieldnames)))
     for row in reader:
         to_return = {}
         for index, (key, value) in enumerate(row.items()):
