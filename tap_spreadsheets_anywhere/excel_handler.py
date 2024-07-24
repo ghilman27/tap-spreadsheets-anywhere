@@ -10,6 +10,9 @@ def generator_wrapper(reader, table_spec: dict={}) -> dict:
     skip_initial = table_spec.get("skip_initial", 0)
     _skip_count = 0
     header_row = None
+    usecols =  table_spec.get("usecols", [])
+    usecols =  set(usecols) if len(usecols) > 0 else set(range(reader.max_column))
+    
     for row in reader:
         if _skip_count < skip_initial:
             LOGGER.debug("Skipped (%d/%d) row: %r", _skip_count, skip_initial, row)
@@ -22,11 +25,12 @@ def generator_wrapper(reader, table_spec: dict={}) -> dict:
             continue
 
         for index, cell in enumerate(row):
+            if index not in usecols:
+                continue
             header_cell = header_row[index]
 
             formatted_key = header_cell.value
             if not formatted_key:
-                continue # don't read empty columns
                 formatted_key = '' # default to empty string for key
 
             # remove non-word, non-whitespace characters

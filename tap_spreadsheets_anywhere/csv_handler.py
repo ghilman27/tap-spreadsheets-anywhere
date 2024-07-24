@@ -4,10 +4,14 @@ import logging
 
 LOGGER = logging.getLogger(__name__)
 
-def generator_wrapper(reader):
+def generator_wrapper(reader, table_spec):
+    usecols =  table_spec.get("usecols", [])
+    usecols =  set(usecols) if len(usecols) > 0 else set(range(reader.max_column))
     for row in reader:
         to_return = {}
-        for key, value in row.items():
+        for index, (key, value) in enumerate(row.items()):
+            if index not in usecols:
+                continue
             if key is None:
                 key = '_smart_extra'
 
@@ -46,4 +50,4 @@ def get_row_iterator(table_spec, reader):
             csv.register_dialect(dialect, custom_dialect)
 
     reader = csv.DictReader(reader, fieldnames=field_names, dialect=dialect)
-    return generator_wrapper(reader)
+    return generator_wrapper(reader, table_spec)
